@@ -24,9 +24,20 @@ function Userinfo() {
     setUser(() => [config.data])
   }
 
+  const  geturl = async () => {
+    const config = await axios({
+      method:"get",
+      url : BaseURL + pathname + `/${type}`
+    })
+
+    console.log(config.data)
+  }
+
+
 
   useEffect(() => {
     getuserinfo()
+    geturl()
   }, [pathname,type])
   return (
     <div className='py-5'>
@@ -73,7 +84,7 @@ function Userinfo() {
 
 
         <button  onClick={()=>{setType("repos")}} className={`${type === "repos" && "dim" }`} style={{background:"black",border:"none",color:"white"}}>Repositories</button>
-        <button  onClick={()=>{setType("Recevied_events")}} className={`${type === "Recevied_events" && "dim" }`} style={{background:"black",border:"none",color:"white"}}>Activity</button>
+        <button  onClick={()=>{setType("received_events")}} className={`${type === "received_events" && "dim" }`} style={{background:"black",border:"none",color:"white"}}>Activity</button>
         <button onClick={()=>{setType("followers")}} className={`${type === "followers" && "dim" }`} style={{background:"black",border:"none",color:"white"}}>followers</button>
 
             {/* <Tabs type={type} setType={setType}/> */}
@@ -90,7 +101,7 @@ function Userinfo() {
       }
 
 {
-        type === "Recevied_events" && (
+        type === "received_events" && (
           <div>
             <Events/>
           </div>
