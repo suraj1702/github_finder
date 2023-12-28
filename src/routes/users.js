@@ -17,7 +17,7 @@ function Users() {
           method: "get",
           url: BaseURL,
         });
-        setusers(getdata.data);
+        // setusers(getdata.data);
         setLoading(null)
       }
 

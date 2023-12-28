@@ -4,15 +4,16 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Tabs from '../components/tabs';
 import Repos from '../components/Repos';
 import Events from '../components/Events';
+import UserContainer from '../components/UserContainer';
 
 
 function Userinfo() {
   const { pathname } = useLocation()
   const [user, setUser] = useState([])
   const [type, setType] = useState("repos")
+  const [info, setInfo] = useState([]);
   const nevigate = useNavigate();
   let BaseURL = "https://api.github.com/users";
-
 
   const getuserinfo = async () => {
     const config = await axios({
@@ -20,25 +21,28 @@ function Userinfo() {
       url: BaseURL + pathname
 
     })
-    // console.log(config.data)
+  
     setUser(() => [config.data])
   }
 
-  const  geturl = async () => {
-    const config = await axios({
-      method:"get",
-      url : BaseURL + pathname + `/${type}`
-    })
-
-    console.log(config.data)
-  }
 
 
+  const geturl = async () => {
+    try {
+      const config = await axios({
+        method: 'get',
+        url: BaseURL + pathname + `/${type}`
+      });
+      setInfo(config.data)
+    } catch (error) {
+      console.error('Axios error:', error);
+    }
+  };
 
   useEffect(() => {
     getuserinfo()
     geturl()
-  }, [pathname,type])
+  }, [pathname, type])
   return (
     <div className='py-5'>
       <button
@@ -79,35 +83,44 @@ function Userinfo() {
       }
 
       <div className='d-flex justify-content-evenly border-bottom pb-4 fs-6 '
-       style={{marginTop:"140px"}}
+        style={{ marginTop: "140px" }}
       >
 
 
-        <button  onClick={()=>{setType("repos")}} className={`${type === "repos" && "dim" }`} style={{background:"black",border:"none",color:"white"}}>Repositories</button>
+        {/* <button  onClick={()=>{setType("repos")}} className={`${type === "repos" && "dim" }`} style={{background:"black",border:"none",color:"white"}}>Repositories</button>
         <button  onClick={()=>{setType("received_events")}} className={`${type === "received_events" && "dim" }`} style={{background:"black",border:"none",color:"white"}}>Activity</button>
-        <button onClick={()=>{setType("followers")}} className={`${type === "followers" && "dim" }`} style={{background:"black",border:"none",color:"white"}}>followers</button>
+        <button onClick={()=>{setType("followers")}} className={`${type === "followers" && "dim" }`} style={{background:"black",border:"none",color:"white"}}>followers</button> */}
 
-            {/* <Tabs type={type} setType={setType}/> */}
-      
+        <Tabs type={type} setType={setType} />
+
       </div>
-          
+
 
       {
         type === "repos" && (
           <div>
-            <Repos/>
+            {info && <Repos users={info}/>}
+          </div>
+        )
+      }
+
+
+
+      {
+        type === "received_events" && (
+          <div>
+            {info && <Events events={info}/>}
           </div>
         )
       }
 
 {
-        type === "received_events" && (
+        type === "followers" && (
           <div>
-            <Events/>
+            <UserContainer  users={info}/>
           </div>
         )
       }
-
     </div>
   )
 }
