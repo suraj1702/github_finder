@@ -114,6 +114,8 @@ function Userinfo() {
         )
       }
 
+
+
 {
         type === "followers" && (
           <div>
